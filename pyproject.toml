@@ -1,0 +1,9 @@
+[project]
+name = "banking-toolkit"
+version = "0.1.0"
+description = "Test-data generator and utilities for the mainframe banking projects"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
