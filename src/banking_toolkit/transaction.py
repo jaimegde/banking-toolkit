@@ -69,3 +69,22 @@ class Transaction:
         )
         assert len(record) == RECORD_LENGTH, len(record)
         return record
+
+        @classmethod
+        def from_record(cls, record: str) -> "Transaction":
+            """Parse one 150-char fixed-length line into a Transaction."""
+            if len(record) != RECORD_LENGTH:
+                raise ValueError(f"record must be {RECORD_LENGTH} chars, got {len(record)}")
+            return cls(
+                txn_id=int(record[0:12]),                                          # 1-12
+                account_iban=record[12:36],                                        # 13-36
+                booking_date=datetime.strptime(record[36:44], "%Y%m%d").date(),   # 37-44
+                value_date=datetime.strptime(record[44:52], "%Y%m%d").date(),     # 45-52
+                booking_time=datetime.strptime(record[52:58], "%H%M%S").time(),   # 53-58
+                txn_type=TxnType(record[58:62].strip()),                           # 59-62
+                dc_indicator=DcIndicator(record[62:63]),                           # 63
+                amount=Decimal(int(record[63:76])).scaleb(-2),                     # 64-76
+                currency=record[76:79],                                            # 77-79
+                counterparty_iban=record[79:103].strip(),                          # 80-103
+                description=record[103:143].strip(),                               # 104-143
+            )
